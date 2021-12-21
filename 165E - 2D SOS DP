@@ -1,0 +1,42 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int bits = 21;
+const int maxn = 1<<bits;
+
+int main()
+{
+    int n; cin >> n; int a[n];
+
+    for (int i = 0; i < n; i++) cin >> a[i];
+
+    vector<int> f(maxn, 0);
+
+    // calculating f
+    for (int i = 0; i < n; i++)
+    {
+        f[a[i]] = 1;
+    }
+
+    vector<vector<int>> dp(maxn, vector<int> (bits+1, -1));
+
+    // Base Case
+    for (int i = 0; i < maxn; i++)
+    {
+        if (f[i] == 1) dp[i][0] = i;
+    }
+
+    for (int t=0; t<maxn; t++)
+    {
+        for (int i=1; i<=bits; i++)
+        {
+            if (t&(1<<(i-1))) dp[t][i] = max(dp[t][i-1], dp[t^(1<<(i-1))][i-1]);
+            else dp[t][i] = dp[t][i-1];
+        }
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        cout << dp[a[i] ^ (maxn-1)][bits] << ' ';
+    }
+}
